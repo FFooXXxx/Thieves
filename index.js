@@ -32,7 +32,7 @@ bot.on('message', message =>{
     }
 
     // Heroku request
-    requests('https://gmodbot.herokuapp.com').on('data', chunk => { continue });
+    requests('https://gmodbot.herokuapp.com').on('data', chunk => {});
 
     // Help message
     if(message.content.startsWith(prefix + 'help')) {
