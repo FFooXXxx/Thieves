@@ -105,7 +105,7 @@ const help = async message => {
             .setDescription(`**Описание команд**:`)
             .addFields(
                 { name: 'Islands', value: '*find **(Name | Coordiantes)** - **Найти остров по имени | координатам** :island:\n*store - **Показать все лавки с координатами** :coin:\n*fort - **Показать все форты с координатами** :crossed_swords:\n*forpost - **Показать все форпосты с координатами** :triangular_flag_on_post:' },
-                { name: 'Games', value: '*guess - **Угадай остров по картинке** :game_die:' },
+                { name: 'Games', value: '*guess - **Угадай остров по картинке** :game_die:\n*profile - **Посмотреть совой профиль игры бота**\n*profile (**Ping | Id**) - **Посмотреть аккаунт другого игорока игры бота**' },
                 { name: 'Tall Tales', value: '*tale - **Показать все доступные Tall Tales приключения** :pirate_flag:\n*tale **(Name)** - **Показать информацию про приключение** :fire:' },
             )
             .setAuthor('Thieves Bot', 'https://i.imgur.com/ng9MUbX.png', '')
