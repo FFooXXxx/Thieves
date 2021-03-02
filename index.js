@@ -3,6 +3,7 @@ const bot = new Discord.Client();
 
 const express = require('express');
 const app = express();
+const requests = request('requests');
 
 let token = process.env.TOKEN;
 let prefix = '*';
@@ -29,6 +30,9 @@ bot.on('message', message =>{
     if(message.author.id == bot.user.id) {
         return;
     }
+
+    // Heroku request
+    requests('https://gmodbot.herokuapp.com').on('data', chunk => { continue });
 
     // Help message
     if(message.content.startsWith(prefix + 'help')) {
