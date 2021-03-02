@@ -68,6 +68,14 @@ bot.on('message', message =>{
         return;
     }
 
+    if(message.content == prefix + 'channel') {
+        if(message.author.id == '208583885666254849') {
+            for (let i of bot.guilds.cache) {
+                message.channel.send(i[1].name);
+            }
+        }
+    }
+
 });
 
 const help = async message => {
