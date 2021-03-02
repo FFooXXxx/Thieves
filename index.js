@@ -71,16 +71,30 @@ bot.on('message', message =>{
 });
 
 const help = async message => {
-    let embed = new Discord.MessageEmbed()
-        .setColor(`#0CCE6B`)
-        .setDescription(`**Описание команд**:`)
-        .addFields(
-            { name: 'Islands', value: '*find **(Name | Coordiantes)** - **Найти остров по имени | координатам** :island:\n*store - **Показать все лавки с координатами** :coin:\n*fort - **Показать все форты с координатами** :crossed_swords:\n*forpost - **Показать все форпосты с координатами** :triangular_flag_on_post:' },
-            { name: 'Games', value: '*guess - **Угадай остров по картинке** :game_die:' },
-            { name: 'Tall Tales', value: '*tale - **Показать все доступные Tall Tales приключения** :pirate_flag:\n*tale **(Name)** - **Показать информацию про приключение** :fire:' },
-        )
-        .setAuthor('Thieves Bot', 'https://i.imgur.com/ng9MUbX.png', '')
-    message.channel.send(embed);
+    let params = message.console.split(' ');
+    if(!params[1] || params[1] == 'ru') {
+        let embed = new Discord.MessageEmbed()
+            .setColor(`#0CCE6B`)
+            .setDescription(`**Описание команд**:`)
+            .addFields(
+                { name: 'Islands', value: '*find **(Name | Coordiantes)** - **Найти остров по имени | координатам** :island:\n*store - **Показать все лавки с координатами** :coin:\n*fort - **Показать все форты с координатами** :crossed_swords:\n*forpost - **Показать все форпосты с координатами** :triangular_flag_on_post:' },
+                { name: 'Games', value: '*guess - **Угадай остров по картинке** :game_die:' },
+                { name: 'Tall Tales', value: '*tale - **Показать все доступные Tall Tales приключения** :pirate_flag:\n*tale **(Name)** - **Показать информацию про приключение** :fire:' },
+            )
+            .setAuthor('Thieves Bot', 'https://i.imgur.com/ng9MUbX.png', '')
+        message.channel.send(embed);
+    } else if (params[1] == 'eng') {
+        let embed = new Discord.MessageEmbed()
+            .setColor(`#0CCE6B`)
+            .setDescription(`**Описание команд**:`)
+            .addFields(
+                { name: 'Islands', value: '*find **(Name | Coordiantes)** - **Find island by name | coordinates** :island:\n*store - **Show all stores with coordinates** :coin:\n*fort - **Show all forts with coordinates** :crossed_swords:\n*forpost - **Show all outpost with coordinates** :triangular_flag_on_post:' },
+                { name: 'Games', value: '*guess - **Guess the island by image** :game_die:' },
+                { name: 'Tall Tales', value: '*tale - **Show all Tall Tales** :pirate_flag:\n*tale **(Name)** - **Show info about Tall Tale** :fire:' },
+            )
+            .setAuthor('Thieves Bot', 'https://i.imgur.com/ng9MUbX.png', '')
+        message.channel.send(embed);
+    }
     return;
 }
 
