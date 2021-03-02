@@ -9,7 +9,7 @@ const Interface = require('./interface');
 let database = new Interface(url, dbname);
 
 bot.on('ready', () => {
-    console.log(`Let's make some kung-fu with ${bot.user.username}`);
+    console.log(`Let's dig some treasures with ${bot.user.username}`);
     bot.generateInvite(["ADMINISTRATOR"]).then(link => {
         console.log(link);
     })
