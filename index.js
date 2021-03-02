@@ -1,5 +1,9 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
+
+const express = require('express');
+const app = express();
+
 let token = process.env.TOKEN;
 let prefix = '*';
 
@@ -7,6 +11,10 @@ const url = process.env.DBURL;
 const dbname = 'islands';
 const Interface = require('./interface');
 let database = new Interface(url, dbname);
+
+app.get('/', (req, res) => {
+    res.send('Bot is runnig')
+});
 
 bot.on('ready', () => {
     console.log(`Let's dig some treasures with ${bot.user.username}`);
@@ -440,4 +448,6 @@ const pretty = param => {
     return newStr;
 }
 
-bot.login(token);
+app.listen(process.env.PORT, ()=> {
+    bot.login(token);
+})
