@@ -17,6 +17,12 @@ app.get('/', (req, res) => {
     res.send('Bot is runnig')
 });
 
+// Heroku request
+setInterval(() => {
+    requests('https://gmodbot.herokuapp.com').on('data', chunk => {});
+}, 600000);
+
+
 bot.on('ready', () => {
     console.log(`Let's dig some treasures with ${bot.user.username}`);
     bot.generateInvite(["ADMINISTRATOR"]).then(link => {
@@ -30,9 +36,6 @@ bot.on('message', message =>{
     if(message.author.id == bot.user.id) {
         return;
     }
-
-    // Heroku request
-    requests('https://gmodbot.herokuapp.com').on('data', chunk => {});
 
     // Help message
     if(message.content.startsWith(prefix + 'help')) {
