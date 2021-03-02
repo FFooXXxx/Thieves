@@ -3,7 +3,7 @@ const bot = new Discord.Client();
 
 const express = require('express');
 const app = express();
-const requests = request('requests');
+const requests = require('requests');
 
 let token = process.env.TOKEN;
 let prefix = '*';
