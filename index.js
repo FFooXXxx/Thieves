@@ -71,7 +71,7 @@ bot.on('message', message =>{
 });
 
 const help = async message => {
-    let params = message.console.split(' ');
+    let params = message.content.split(' ');
     if(!params[1] || params[1] == 'ru') {
         let embed = new Discord.MessageEmbed()
             .setColor(`#0CCE6B`)
