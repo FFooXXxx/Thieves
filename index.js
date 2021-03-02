@@ -72,6 +72,10 @@ bot.on('message', message =>{
         guess(message);
         return;
     }
+    if(message.content.startsWith(prefix + 'profile')) {
+        profile(message);
+        return;
+    }
 
     // Developer commands
     if(message.content.startsWith(prefix + 'test')) {
@@ -112,7 +116,7 @@ const help = async message => {
             .setDescription(`**Описание команд**:`)
             .addFields(
                 { name: 'Islands', value: '*find **(Name | Coordiantes)** - **Find island by name | coordinates** :island:\n*store - **Show all stores with coordinates** :coin:\n*fort - **Show all forts with coordinates** :crossed_swords:\n*forpost - **Show all outpost with coordinates** :triangular_flag_on_post:' },
-                { name: 'Games', value: '*guess - **Guess the island by image** :game_die:' },
+                { name: 'Games', value: '*guess - **Guess the island by image** :game_die:\n*profile - **See your current bot game profile**\n*profile (**Ping | Id**) - **See another users bot game profile**' },
                 { name: 'Tall Tales', value: '*tale - **Show all Tall Tales** :pirate_flag:\n*tale **(Name)** - **Show info about Tall Tale** :fire:' },
             )
             .setAuthor('Thieves Bot', 'https://i.imgur.com/ng9MUbX.png', '')
@@ -167,7 +171,92 @@ const tales = async message => {
     return;
 }
 
+const getId = ping => {
+    let str = '';
+    for (let i = 0; i < ping.length; i++) {
+        if (ping[i].match(/[0-9]/)) {
+           str += ping[i]; 
+        }
+    }
+    return str;
+}
+
+const createUser = async user => {
+    let DBuser = {
+        "name": user.tag,
+        "score": "0",
+        "lastScore": "0",
+        "try": "0",
+        "avatar": user.avatarURL({ format: 'png' }),
+        "guild": "none",
+        "tag": "none",
+        "id": user.id,
+        "color": "#E97D29"
+    }
+
+    await database.insertOne('users', DBuser);
+
+    return DBuser;
+}
+
+const profile = async message => {
+    let params = message.content.split(' ');
+    if (!params[1]) {
+        await database.findOne('users', { id: message.author.id }).then(async data => {
+            if (!data) {
+                let user = createUser(message.author);
+                let embed = new Discord.MessageEmbed()
+                    .setColor(data.color)
+                    .addFields(
+                        { name: 'Top Score', value: `${user.score} :game_die:` },
+                        { name: 'Last Score', value: `${data.lastScore} :game_die:` },
+                        { name: 'Attempts', value: `${user.try} :skull:` },
+                    )
+                    .setAuthor(user.name, user.avatar, '')
+                message.channel.send(embed);
+            } else {
+                let embed = new Discord.MessageEmbed()
+                    .setColor(data.color)
+                    .addFields(
+                        { name: 'Top Score', value: `${data.score} :game_die:` },
+                        { name: 'Last Score', value: `${data.lastScore} :game_die:` },
+                        { name: 'Attempts', value: `${data.try} :skull:` },
+                    )
+                    .setAuthor(message.author.tag, message.author.avatarURL({ format: 'png' }), '')
+                message.channel.send(embed);
+            }
+        });
+    } else if (params[1] != 'edit') {
+        let id = getId(params[1]);
+        console.log(id);
+
+        await database.findOne('users', { id: id }).then(async data => {
+            if (data) {
+                let embed = new Discord.MessageEmbed()
+                    .setColor(data.color)
+                    .addFields(
+                        { name: 'Top Score', value: `${data.score} :game_die:` },
+                        { name: 'Last Score', value: `${data.lastScore} :game_die:` },
+                        { name: 'Attempts', value: `${data.try} :skull:` },
+                    )
+                    .setAuthor(message.author.tag, message.author.avatarURL({ format: 'png' }), '')
+                message.channel.send(embed);
+            } else {
+                let embed = new Discord.MessageEmbed()
+                    .setColor('#D33F49')
+                    .setDescription('Looks like this player hasnt played any guess game')
+                message.channel.send(embed);
+            }
+            
+        });
+    }
+    return;
+}
+
 const guess = async message => {
+
+    await database.findOne('users', { id: message.author.id }).then(data => { if (!data) createUser(message.author) });
+
     let answer;
     let variant1;
     let variant2;
@@ -223,6 +312,22 @@ const guess = async message => {
         let choose = await message.channel.awaitMessages(filter, { max: 1, time: 150000 });
 
         if (!choose.first().content || choose.first().content != answer) {
+
+            await database.findOne('users', { id: message.author.id }).then(async data => {
+                if (!data) { createUser(message.author); console.log('suka'); return; }
+                let dataScore = data.score;
+                let dataTry = data.try;
+
+                if (dataScore < currentScore) { 
+                    await database.updateOne('users', { id: message.author.id }, { score: currentScore, try: Number(dataTry) + 1, lastScore: currentScore });
+                    console.log(dataScore, currentScore);
+                } else { 
+                    await database.updateOne('users', { id: message.author.id }, { try: Number(dataTry) + 1, lastScore: currentScore });
+                    console.log(dataScore, currentScore);
+                }
+
+            });
+
             let embed2 = new Discord.MessageEmbed()
                 .setColor(`#D33F49`)
                 .setTitle('Guess Game')
